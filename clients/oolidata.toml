@@ -1,0 +1,12 @@
+[client]
+slug = "oolidata"
+
+[fly]
+app_name = "ai-implement-oolidata"
+org = "personal"
+region = "iad"
+
+[sessions]
+app_name = "ai-implement-sessions-oolidata"
+org = "personal"
+region = "iad"
