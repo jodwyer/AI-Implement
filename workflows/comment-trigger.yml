@@ -47,7 +47,7 @@ jobs:
           COMMENTER: ${{ github.event.comment.user.login }}
           REPO: ${{ github.repository }}
         run: |
-          PERMISSION=$(gh api repos/$REPO/collaborators/$COMMENTER/permission --jq '.permission' 2>/dev/null || echo "none")
+          PERMISSION=$(gh api "repos/$REPO/collaborators/$COMMENTER/permission" --jq '.permission' 2>/dev/null || echo "none")
           if [[ "$PERMISSION" != "admin" && "$PERMISSION" != "maintain" && "$PERMISSION" != "write" ]]; then
             echo "User $COMMENTER does not have write access (permission: $PERMISSION), skipping"
             exit 0
@@ -124,6 +124,6 @@ jobs:
           COMMENT_ID: ${{ github.event.comment.id }}
           REPO: ${{ github.repository }}
         run: |
-          gh api repos/$REPO/issues/comments/$COMMENT_ID/reactions \
+          gh api "repos/$REPO/issues/comments/$COMMENT_ID/reactions" \
             --method POST \
             -f content='+1'
