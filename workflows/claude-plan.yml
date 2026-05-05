@@ -143,6 +143,7 @@ jobs:
               PLANNING.md > /tmp/planning-body.md
             # Strip HTML comments so meta-documentation isn't sent to Claude
             perl -0777 -pe 's/<!--.*?-->//gs' /tmp/planning-body.md > /tmp/planning-stripped.md
+            # shellcheck disable=SC2016  # envsubst takes a literal '${VAR}' list, not a shell-expanded one
             envsubst '${ISSUE_ID} ${ISSUE_IDENTIFIER} ${ISSUE_TITLE} ${ISSUE_DESCRIPTION} ${PARENT} ${SIBLINGS} ${DEPENDENCIES}' \
               < /tmp/planning-stripped.md > /tmp/claude-prompt.md
           else
@@ -215,6 +216,7 @@ jobs:
 
           Base your analysis on what you actually find in the codebase — avoid generic boilerplate.
           PROMPT
+            # shellcheck disable=SC2016  # envsubst takes a literal '${VAR}' list, not a shell-expanded one
             envsubst '${ISSUE_ID} ${ISSUE_IDENTIFIER} ${ISSUE_TITLE} ${ISSUE_DESCRIPTION} ${PARENT} ${SIBLINGS} ${DEPENDENCIES}' \
               < /tmp/claude-prompt.md > /tmp/claude-prompt-rendered.md
             mv /tmp/claude-prompt-rendered.md /tmp/claude-prompt.md

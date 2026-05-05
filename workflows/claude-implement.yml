@@ -266,6 +266,7 @@ jobs:
               WORKFLOW.md > /tmp/workflow-body.md
             # Strip HTML comments so meta-documentation isn't sent to Claude
             perl -0777 -pe 's/<!--.*?-->//gs' /tmp/workflow-body.md > /tmp/workflow-stripped.md
+            # shellcheck disable=SC2016  # envsubst takes a literal '${VAR}' list, not a shell-expanded one
             envsubst '${ISSUE_ID} ${ISSUE_IDENTIFIER} ${ISSUE_TITLE} ${ISSUE_DESCRIPTION} ${PR_NUMBER} ${PLANNING_CONTEXT}' \
               < /tmp/workflow-stripped.md > /tmp/claude-prompt.md
           else
@@ -301,6 +302,7 @@ jobs:
           ${PLANNING_CONTEXT}
           PROMPT
             fi
+            # shellcheck disable=SC2016  # envsubst takes a literal '${VAR}' list, not a shell-expanded one
             envsubst '${ISSUE_ID} ${ISSUE_IDENTIFIER} ${ISSUE_TITLE} ${ISSUE_DESCRIPTION} ${PR_NUMBER} ${PLANNING_CONTEXT}' \
               < /tmp/claude-prompt.md > /tmp/claude-prompt-rendered.md
             mv /tmp/claude-prompt-rendered.md /tmp/claude-prompt.md
@@ -348,11 +350,15 @@ jobs:
               GAP_ANALYSIS_MODEL="claude-haiku-4-5-20251001"
             fi
           fi
-          echo "model=$MODEL" >> "$GITHUB_OUTPUT"
-          echo "gap_analysis_model=$GAP_ANALYSIS_MODEL" >> "$GITHUB_OUTPUT"
-          echo "AI_SETUP_SCRIPT=$AI_SETUP_SCRIPT" >> "$GITHUB_ENV"
-          echo "AI_VERIFY_SCRIPT=$AI_VERIFY_SCRIPT" >> "$GITHUB_ENV"
-          echo "AI_TEARDOWN_SCRIPT=$AI_TEARDOWN_SCRIPT" >> "$GITHUB_ENV"
+          {
+            echo "model=$MODEL"
+            echo "gap_analysis_model=$GAP_ANALYSIS_MODEL"
+          } >> "$GITHUB_OUTPUT"
+          {
+            echo "AI_SETUP_SCRIPT=$AI_SETUP_SCRIPT"
+            echo "AI_VERIFY_SCRIPT=$AI_VERIFY_SCRIPT"
+            echo "AI_TEARDOWN_SCRIPT=$AI_TEARDOWN_SCRIPT"
+          } >> "$GITHUB_ENV"
 
           # Nudge Claude toward the power tools that ship in this runner.
           {
